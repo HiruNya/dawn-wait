@@ -1,0 +1,19 @@
+[package]
+name = "dawn-wait"
+version = "0.1.0"
+authors = ["Hiruna K. Jayamanne <hirunav2@gmail.com>"]
+edition = "2018"
+
+[dependencies]
+chashmap = "2"
+dawn-gateway = { git="https://github.com/dawn-rs/dawn.git" }
+dawn-model = { git="https://github.com/dawn-rs/dawn.git" }
+futures-channel = "0.3"
+futures-util = "0.3"
+pin-project = "0.4"
+
+[dev-dependencies]
+dawn = { git="https://github.com/dawn-rs/dawn.git" }
+dotenv = "0.15"
+futures = "0.3"
+tokio = "0.2"
