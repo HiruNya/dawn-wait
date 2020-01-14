@@ -1,0 +1,1 @@
+initSidebarItems({"struct":[["Listener","Listens for `MessageCreate` events and will remove any messages that match the predicate from the stream."],["WaitFor","A struct that implements [`Future`] which eventually returns a [`Message`]."],["WaitForMultiple","A struct that implements a [`Stream`] of [`Message`]s."]]});
