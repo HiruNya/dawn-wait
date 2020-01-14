@@ -1,3 +1,7 @@
+![](https://github.com/HiruNya/dawn-wait/workflows/Rust/badge.svg)
+
+[Documentation](https://hiru.dev/docs/dawn-wait/)
+
 <!-- cargo-sync-readme start -->
 
 This crate aims to provide an easy way to wait for new messages in a Discord channel.
