@@ -45,13 +45,17 @@ impl PinnedDrop for WaitForMultiple {
         let channel_id = self.channel_id;
         let created = self.created;
         let items_map = &self.items_map;
-        let num = self.num;
-        match num {
-            Some(0) => {}
-            _ => if let Some(ref mut items) = items_map.get_mut(&channel_id) {
-                items.retain(|item| item.created != created);
+        items_map.get_mut(&channel_id).and_then(|mut items| {
+            let index = items.iter().enumerate()
+                .find(|(_, item)| item.created == created)
+                .map(|(i, _)| i)?;
+            items.remove(index);
+            if items.is_empty() {
+                drop(items);
+                items_map.remove(&channel_id)?;
             }
-        }
+            Some(())
+        });
     }
 }
 
@@ -73,8 +77,9 @@ impl Future for WaitFor {
             if poll.is_ready() {
                 *wait_for.1 = false;
             }
-            return poll.map(|o| o.unwrap())
+            poll.map(|o| o.unwrap())
+        } else {
+            Poll::Pending
         }
-        Poll::Pending
     }
 }

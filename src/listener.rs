@@ -1,5 +1,5 @@
 use chashmap::CHashMap;
-use dawn_model::{channel::message::Message, gateway::payload::MessageCreate, id::ChannelId};
+use dawn_model::{channel::message::Message, id::ChannelId};
 use dawn_gateway::shard::event::Event;
 use futures_channel::mpsc::{UnboundedSender, unbounded};
 use futures_util::stream::{Stream, StreamExt};
@@ -11,7 +11,7 @@ use crate::wait::{WaitFor, WaitForMultiple};
 /// Listens for `MessageCreate` events and will remove any messages that match the predicate from the stream.
 #[derive(Clone, Default)]
 pub struct Listener {
-    items: Arc<CHashMap<ChannelId, Vec<ListenerItem>>>,
+    pub(crate) items: Arc<CHashMap<ChannelId, Vec<ListenerItem>>>,
 }
 impl Listener {
     /// Handles a Stream of events, removing any MessageCreate events that match the predicate.
@@ -20,31 +20,9 @@ impl Listener {
             let items_map = self.items.clone();
             async move {
                 match event {
-                    Event::MessageCreate(message) => {
-                        let index = items_map.get(&message.channel_id)
-                            .and_then(|items_| items_.iter().enumerate().find(|(_, item)| (item.predicate)(&message)).map(|(i, _)| i));
-                        if let Some(index) = index {
-                            let channel = message.channel_id;
-                            let items = items_map.get_mut(&channel);
-                            if let Some(mut items) = items {
-                                if let Some(item) = items.get_mut(index) {
-                                    let MessageCreate(message) = *(message.clone());
-                                    if item.sender.unbounded_send(message).is_ok() {
-                                        if let Some(ref mut uses) = item.num_uses {
-                                            *uses -= 1;
-                                            if *uses == 0 {
-                                                items.remove(index);
-                                                if items.is_empty() {
-                                                    items_map.remove(&channel);
-                                                }
-                                            }
-                                            return None;
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        Some(Event::MessageCreate(message))
+                    Event::MessageCreate(message) => match matches(items_map, &message) {
+                        Some(_) => None,
+                        None => Some(Event::MessageCreate(message)),
                     }
                     event => Some(event),
                 }
@@ -94,4 +72,14 @@ pub(crate) struct ListenerItem {
     /// The sending end of the channel.
     pub(crate) sender: UnboundedSender<Message>,
     pub(crate) created: Instant,
+}
+
+fn matches(items_map: Arc<CHashMap<ChannelId, Vec<ListenerItem>>>, message: &Message) -> Option<()> {
+    let mut items = items_map.get_mut(&message.channel_id)?;
+    let item = items.iter_mut().find(|item| (item.predicate)(&message) && item.num_uses != Some(0))?;
+    item.sender.unbounded_send(message.clone()).ok()?;
+    if let Some(ref mut uses) = item.num_uses {
+        *uses -= 1;
+    }
+    Some(())
 }

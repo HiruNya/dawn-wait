@@ -30,7 +30,21 @@ pub use wait::{WaitFor, WaitForMultiple};
 #[cfg(test)]
 mod tests {
     #[test]
-    fn it_works() {
-        assert_eq!(2 + 2, 4);
+    fn cleanup() {
+        use dawn::model::id::ChannelId;
+        use crate::Listener;
+        
+        let listener = Listener::default();
+        {
+            let _wait1 = listener.wait_for(ChannelId::default(), |_| true);
+            let _wait2 = listener.wait_for(ChannelId::default(), |_| true);
+            
+            // 2 listener items were created for the *same* channel.
+            assert_eq!(listener.items.len(), 1);
+            assert_eq!(listener.items.get(&ChannelId::default()).expect("Channel doesn't exit").len(), 2);
+        }
+
+        // When they are dropped, the listener should be empty.
+        assert!(listener.items.is_empty());
     }
 }
