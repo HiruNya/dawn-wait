@@ -8,7 +8,6 @@ use std::{future::Future, pin::Pin, sync::Arc, task::{Context, Poll}};
 use std::time::Instant;
 
 use crate::listener::ListenerItem;
-use pin_project::__private::PinnedDrop;
 
 /// A struct that implements a [`Stream`] of [`Message`]s.
 #[pin_project(PinnedDrop)]
