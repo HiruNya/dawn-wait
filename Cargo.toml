@@ -5,7 +5,7 @@ authors = ["Hiruna K. Jayamanne <hirunav2@gmail.com>"]
 edition = "2018"
 
 [dependencies]
-chashmap = "2"
+dashmap = "^3.1"
 dawn-gateway = { git="https://github.com/dawn-rs/dawn.git" }
 dawn-model = { git="https://github.com/dawn-rs/dawn.git" }
 futures-channel = "0.3"

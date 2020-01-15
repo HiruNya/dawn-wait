@@ -1,4 +1,4 @@
-use chashmap::CHashMap;
+use dashmap::DashMap;
 use dawn_model::{channel::Message, id::ChannelId};
 use futures_channel::mpsc::UnboundedReceiver;
 use futures_util::stream::Stream;
@@ -8,6 +8,7 @@ use std::{future::Future, pin::Pin, sync::Arc, task::{Context, Poll}};
 use std::time::Instant;
 
 use crate::listener::ListenerItem;
+use pin_project::__private::PinnedDrop;
 
 /// A struct that implements a [`Stream`] of [`Message`]s.
 #[pin_project(PinnedDrop)]
@@ -15,7 +16,7 @@ pub struct WaitForMultiple {
     /// The channel from which this struct is waiting for a [`Message`] from.
     pub channel_id: ChannelId,
     pub(crate) created: Instant,
-    pub(crate) items_map: Arc<CHashMap<ChannelId, Vec<ListenerItem>>>,
+    pub(crate) items_map: Arc<DashMap<ChannelId, Vec<ListenerItem>>>,
     pub(crate) num: Option<u8>,
     #[pin]
     pub(crate) receiver: UnboundedReceiver<Message>,

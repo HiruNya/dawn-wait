@@ -20,10 +20,12 @@ Then type in `!example` in a Discord channel which the bot has access to.
 ![Preview](https://imgur.com/ZlvcM6K.png)
 
 # Note
-This crate uses `chashmap` underneath for its concurrent data structure
+This crate uses [dashmap] underneath for its concurrent data structure
 which does not provide a way of polling the availability for a lock and therefore
 the acquiring of a Read or Write lock cannot be asynchronous and must be blocking.
-As there is a lock per channel, in the rare case that multiple listeners are listening on the same channel,
-some operations *may* block.
+I have not seen this cause a problem however on the other hand I haven't tested this out
+with heavier workloads so please make an issue if you do encounter problems.
+
+[dashmap]: https://crates.io/crates/dashmap
 
 <!-- cargo-sync-readme end -->
