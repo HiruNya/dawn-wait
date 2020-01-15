@@ -5,7 +5,10 @@
 <!-- cargo-sync-readme start -->
 
 This crate aims to provide an easy way to wait for new messages in a Discord channel.
-This is meant to be used alongside the crates from the [dawn ecosystem](https://github.com/dawn-rs/dawn).
+This is meant to be used alongside the crates from the [dawn ecosystem].
+
+The equivalent of this in other languages/frameworks would be
+the `awaitMessages` method in discord.js and the `wait_for` function in discord.py.
 
 # Examples
 To try out the examples in the `examples` directory,
@@ -27,5 +30,6 @@ I have not seen this cause a problem however on the other hand I haven't tested 
 with heavier workloads so please make an issue if you do encounter problems.
 
 [dashmap]: https://crates.io/crates/dashmap
+[dawn ecosystem]: https://github.com/dawn-rs/dawn
 
 <!-- cargo-sync-readme end -->
