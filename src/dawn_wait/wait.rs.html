@@ -83,7 +83,6 @@
 <span id="83">83</span>
 <span id="84">84</span>
 <span id="85">85</span>
-<span id="86">86</span>
 </pre><div class="example-wrap"><pre class="rust ">
 <span class="kw">use</span> <span class="ident">dashmap</span>::<span class="ident">DashMap</span>;
 <span class="kw">use</span> <span class="ident">dawn_model</span>::{<span class="ident">channel</span>::<span class="ident">Message</span>, <span class="ident">id</span>::<span class="ident">ChannelId</span>};
@@ -95,7 +94,6 @@
 <span class="kw">use</span> <span class="ident">std</span>::<span class="ident">time</span>::<span class="ident">Instant</span>;
 
 <span class="kw">use</span> <span class="kw">crate</span>::<span class="ident">listener</span>::<span class="ident">ListenerItem</span>;
-<span class="kw">use</span> <span class="ident">pin_project</span>::<span class="ident">__private</span>::<span class="ident">PinnedDrop</span>;
 
 <span class="doccomment">/// A struct that implements a [`Stream`] of [`Message`]s.</span>
 <span class="attribute">#[<span class="ident">pin_project</span>(<span class="ident">PinnedDrop</span>)]</span>
