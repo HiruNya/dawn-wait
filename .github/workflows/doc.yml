@@ -11,8 +11,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v1
+    - name: Install nightly toolchain
+      uses: actions-rs/toolchain@v1
+      with:
+        - toolchain: nightly
     - name: Build Documentation
-      run: cargo doc --no-deps
+      run: cargo +nightly doc --no-deps
     - name: Deploy
       uses: peaceiris/actions-gh-pages@v2
       env:

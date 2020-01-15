@@ -1,4 +1,5 @@
 #![warn(missing_docs)]
+#![doc(html_root_url = "https://hiru.dev/docs/dawn-wait/")]
 //! This crate aims to provide an easy way to wait for new messages in a Discord channel.
 //! This is meant to be used alongside the crates from the [dawn ecosystem](https://github.com/dawn-rs/dawn).
 //!

@@ -8,13 +8,13 @@ use std::{marker::Unpin, sync::Arc, time::Instant};
 
 use crate::wait::{WaitFor, WaitForMultiple};
 
-/// Listens for `MessageCreate` events and will remove any messages that match the predicate from the stream.
+/// Listens for [`MessageCreate`] events and will remove any messages that match the predicate from the stream.
 #[derive(Clone, Default)]
 pub struct Listener {
     pub(crate) items: Arc<CHashMap<ChannelId, Vec<ListenerItem>>>,
 }
 impl Listener {
-    /// Handles a Stream of events, removing any MessageCreate events that match the predicate.
+    /// Handles a Stream of events, removing any [`MessageCreate`] events that match the predicate.
     pub fn handle<'a, S: Stream<Item=Event> + Unpin + Send + 'a>(&'a self, events: S) -> impl Stream<Item=Event> + Unpin + Send + 'a {
         events.filter_map(move |event| {
             let items_map = self.items.clone();
@@ -35,6 +35,8 @@ impl Listener {
     /// This will wait *forever* until a [`Message`] is found or the [`WaitFor`] struct is dropped.
     ///
     /// You may want to timeout the future by using a function like `tokio::timer::timeout` or equivalent.
+    ///
+    /// [`WaitFor`]: struct.WaitFor.html
     pub fn wait_for<F: Fn(&Message) -> bool + Send + Sync + 'static>(&self, channel: ChannelId, predicate: F) -> WaitFor {
         WaitFor::new(self.wait_for_multiple(channel, Some(1), predicate))
     }
@@ -44,6 +46,8 @@ impl Listener {
     /// This will wait *forever* until a [`Message`] is found `num_messages` times or the [`WaitForMultiple`] struct is dropped.
     ///
     /// You may want to timeout the future by using a function like `tokio::timer::timeout` or equivalent.
+    ///
+    /// [`WaitForMultiple`]: struct.WaitForMultiple.html
     pub fn wait_for_multiple<F: Fn(&Message) -> bool + Send + Sync + 'static>(&self, channel: ChannelId, num_messages: Option<u8>, predicate: F) -> WaitForMultiple {
         let (sender, receiver) = unbounded();
         let created = Instant::now();
