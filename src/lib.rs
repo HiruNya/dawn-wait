@@ -34,6 +34,38 @@ mod wait;
 pub use listener::Listener;
 pub use wait::{WaitFor, WaitForMultiple};
 
+use dawn_model::{channel::Message, id::ChannelId};
+
+/// An extension trait for ChannelId to make it easier to use.
+///
+/// # Example
+/// ```rust,no_run
+/// let new_message = old_message.channel_id.wait_for(listener, |msg| msg.author == old_message.author);
+/// ```
+pub trait ChannelIdExt {
+    /// Waits for a single message.
+    ///
+    /// See the documentation for [`Listener::wait_for`] for more information.
+    ///
+    /// [`Listener::wait_for`]: struct.Listener.html#method.wait_for
+    fn wait_for<F: Fn(&Message) -> bool + Send + Sync + 'static>(&self, listener: &Listener, predicate: F) -> WaitFor;
+    /// Waits for a multiple messages.
+    ///
+    /// See the documentation for [`Listener::wait_for_multiple`] for more information.
+    ///
+    /// [`Listener::wait_for_multiple`]: struct.Listener.html#method.wait_for_multiple
+    fn wait_for_multiple<F: Fn(&Message) -> bool + Send + Sync + 'static>(&self, listener: &Listener, num_messages: Option<u8>, predicate: F) -> WaitForMultiple;
+}
+
+impl ChannelIdExt for ChannelId {
+    fn wait_for<F: Fn(&Message) -> bool + Send + Sync + 'static>(&self, listener: &Listener, predicate: F) -> WaitFor {
+        listener.wait_for(*self, predicate)
+    }
+    fn wait_for_multiple<F: Fn(&Message) -> bool + Send + Sync + 'static>(&self, listener: &Listener, num_messages: Option<u8>, predicate: F) -> WaitForMultiple {
+        listener.wait_for_multiple(*self, num_messages, predicate)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     #[test]
