@@ -39,7 +39,7 @@ use dawn_model::{channel::Message, id::ChannelId};
 /// An extension trait for ChannelId to make it easier to use.
 ///
 /// # Example
-/// ```rust,no_run
+/// ```ignore
 /// let new_message = old_message.channel_id.wait_for(listener, |msg| msg.author == old_message.author);
 /// ```
 pub trait ChannelIdExt {
